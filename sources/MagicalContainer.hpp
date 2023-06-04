@@ -22,6 +22,9 @@ public:
     MagicalContainer(); //default
     MagicalContainer(MagicalContainer &other); // copy
     ~MagicalContainer(); //destructor
+    MagicalContainer(MagicalContainer&& other) noexcept; // Move constructor
+    MagicalContainer &operator=(MagicalContainer&& other) noexcept; // Move assignment operator
+
     MagicalContainer &operator=(const MagicalContainer &other);
 
     void addElement(int element);
@@ -38,12 +41,17 @@ public:
 
     public:
         AscendingIterator(const MagicalContainer &cont, int curr = 0);
-
         AscendingIterator(const AscendingIterator &other);
+        ~AscendingIterator() {}
+        AscendingIterator(AscendingIterator&& other) noexcept; // Move constructor
+        AscendingIterator& operator=(AscendingIterator&& other) noexcept; // Move assignment operator
+
+
 
 
         AscendingIterator begin() const;
         AscendingIterator end() const;
+
 
         AscendingIterator &operator=(const AscendingIterator &other);
         bool operator==(const AscendingIterator &other) const;
@@ -66,8 +74,11 @@ public:
         bool isForward = true;
 
     public:
-        SideCrossIterator(const MagicalContainer &cont, int forward = 0, int backward = 0);
+        SideCrossIterator(const MagicalContainer &cont, int forward = 0, int backward = -1);
         SideCrossIterator(const SideCrossIterator &other);
+        ~SideCrossIterator() {}
+        SideCrossIterator(SideCrossIterator&& other) noexcept; // Move constructor
+        SideCrossIterator& operator=(SideCrossIterator&& other) noexcept; // Move assignment operator
 
         SideCrossIterator begin() const;
         SideCrossIterator end() const;
@@ -90,6 +101,9 @@ public:
     public:
         PrimeIterator(const MagicalContainer &cont, int curr = 0);
         PrimeIterator(const PrimeIterator &other);
+        ~PrimeIterator() {}
+        PrimeIterator(PrimeIterator&& other) noexcept; // Move constructor
+        PrimeIterator& operator=(PrimeIterator&& other) noexcept; // Move assignment operator
 
         bool isPrime(int num);
         PrimeIterator begin() const;
@@ -108,5 +122,6 @@ public:
 
 
 #endif //MAGICAL_ITERATORS_A_MAGICALCONTAINER_H
+
 
 

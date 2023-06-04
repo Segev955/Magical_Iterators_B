@@ -13,6 +13,8 @@ MagicalContainer::MagicalContainer(MagicalContainer &other) {
 
 MagicalContainer::~MagicalContainer() {}
 
+
+
 MagicalContainer &MagicalContainer::operator=(const MagicalContainer &other) {
     if (this == &other) {
         return *this;
@@ -32,7 +34,7 @@ void MagicalContainer::removeElement(int element) {
         dArray.erase(x);
     }
     else {
-        throw std::invalid_argument("Element not found");
+        throw runtime_error("Element not found");
     }
 }
 
@@ -50,7 +52,6 @@ MagicalContainer::AscendingIterator::AscendingIterator(const AscendingIterator &
         : cont(other.cont), curr(other.curr) {}
 
 
-
 MagicalContainer::AscendingIterator MagicalContainer::AscendingIterator::begin() const {
     return MagicalContainer::AscendingIterator(cont, 0);
 }
@@ -58,10 +59,10 @@ MagicalContainer::AscendingIterator MagicalContainer::AscendingIterator::begin()
 MagicalContainer::AscendingIterator MagicalContainer::AscendingIterator::end() const {
     return AscendingIterator(cont, cont.size());
 }
-
 MagicalContainer::AscendingIterator &MagicalContainer::AscendingIterator::operator=(const AscendingIterator &other) {
+    if (&this->cont != &other.cont)
+        throw runtime_error("Not the same container");
     if (this != &other) {
-//        cont = other.cont;
         curr = other.curr;
     }
     return *this;
@@ -88,6 +89,8 @@ int MagicalContainer::AscendingIterator::operator*() const {
 }
 
 MagicalContainer::AscendingIterator &MagicalContainer::AscendingIterator::operator++() {
+    if (*this == end())
+        throw runtime_error("You are at the end");
     ++curr;
     return *this;
 }
@@ -96,25 +99,30 @@ MagicalContainer::AscendingIterator &MagicalContainer::AscendingIterator::operat
 //SideCrossIterator
 
 MagicalContainer::SideCrossIterator::SideCrossIterator(const MagicalContainer &cont, int forward, int backward)
-        : cont(cont), forward(forward), backward(backward) {}
+        : cont(cont), forward(forward), backward(backward) {
+    if (backward == -1)
+        this->backward = cont.size()-1;
+}
 
 MagicalContainer::SideCrossIterator::SideCrossIterator(const SideCrossIterator &other)
         : cont(other.cont), forward(other.forward), backward(other.backward) {}
 
 
 MagicalContainer::SideCrossIterator MagicalContainer::SideCrossIterator::begin() const {
-    return SideCrossIterator(cont, 0, cont.size());
+    return SideCrossIterator(cont, 0, cont.size()-1);
 }
 
 MagicalContainer::SideCrossIterator MagicalContainer::SideCrossIterator::end() const {
-    int s = cont.size() / 2;
-    if (cont.size() % 2 == 0) {
-        return SideCrossIterator(cont, cont.size(), 0);
+    int s = cont.size() / 2;//     0 1 2 3 5
+    if (cont.size() % 2 == 0) { // 1 2 3 4 5
+        return SideCrossIterator(cont, s+1, s);
     }
-    return SideCrossIterator(cont, s, s);
+    return SideCrossIterator(cont, s+1, s); //false
 }
 
 MagicalContainer::SideCrossIterator &MagicalContainer::SideCrossIterator::operator=(const SideCrossIterator &other) {
+    if (&this->cont != &other.cont)
+        throw runtime_error("Not the same container");
     if (this != &other) {
 //        cont = other.cont;
         forward = other.forward;
@@ -126,6 +134,9 @@ MagicalContainer::SideCrossIterator &MagicalContainer::SideCrossIterator::operat
 
 
 bool MagicalContainer::SideCrossIterator::operator==(const SideCrossIterator &other) const {
+    cout << cont.size() << endl;
+    cout << "forward:" <<  forward << "other:" << other.forward << endl;
+    cout << "backward:" << backward << "other:" << other.backward << endl;
     return forward == other.forward && backward == other.backward;
 }
 
@@ -134,27 +145,52 @@ bool MagicalContainer::SideCrossIterator::operator!=(const SideCrossIterator &ot
 }
 
 bool MagicalContainer::SideCrossIterator::operator>(const SideCrossIterator &other) const {
-    return forward > other.forward && backward > other.backward;
+    if (isForward && other.isForward) {
+        return forward > other.forward;
+    }
+    else if (isForward && !other.isForward) {
+        return forward > other.backward;
+    }
+    else if (!isForward && other.isForward) {
+        return backward > other.isForward;
+    }
+    return backward > other.backward;
 }
 
 bool MagicalContainer::SideCrossIterator::operator<(const SideCrossIterator &other) const {
-    return forward < other.forward && backward < other.backward;
+    if (isForward && other.isForward) {
+        return forward < other.forward;
+    }
+    else if (isForward && !other.isForward) {
+        return forward < other.backward;
+    }
+    else if (!isForward && other.isForward) {
+        return backward < other.isForward;
+    }
+    return backward < other.backward;
 }
 
 int MagicalContainer::SideCrossIterator::operator*() {
     if (isForward) {
-        isForward = false;
+//        isForward = false;
         return cont.dArray[(std::vector<int>::size_type) forward];
     }
-    isForward = true;
+//    isForward = true;
     return cont.dArray[(std::vector<int>::size_type) backward];
 }
 
+// 1 2 3 4 5 -> 1 5
 MagicalContainer::SideCrossIterator &MagicalContainer::SideCrossIterator::operator++() {
-    if (isForward)
+    if (*this == end())
+        throw runtime_error("You are at the end");
+    if (isForward) {
         ++forward;
-    else
+        isForward = false;
+    }
+    else {
         --backward;
+        isForward = true;
+    }
     return *this;
 }
 
@@ -196,6 +232,8 @@ MagicalContainer::PrimeIterator MagicalContainer::PrimeIterator::end() const {
 }
 
 MagicalContainer::PrimeIterator &MagicalContainer::PrimeIterator::operator=(const PrimeIterator &other) {
+    if (&this->cont != &other.cont)
+        throw runtime_error("Not the same container");
     if (this != &other) {
 //        cont = other.cont;
         curr = other.curr;
@@ -224,6 +262,8 @@ int MagicalContainer::PrimeIterator::operator*() const {
 }
 
 MagicalContainer::PrimeIterator &MagicalContainer::PrimeIterator::operator++() {
+    if (*this == end())
+        throw runtime_error("You are at the end");
     ++curr;
     while (curr < cont.size()) {
         if (isPrime(cont.dArray[(std::vector<int>::size_type) curr])) {
@@ -233,4 +273,5 @@ MagicalContainer::PrimeIterator &MagicalContainer::PrimeIterator::operator++() {
     }
     return *this;
 }
+
 
