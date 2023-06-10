@@ -21,7 +21,7 @@ MagicalContainer &MagicalContainer::operator=(const MagicalContainer &other) {
         return *this;
     }
     dArray = other.dArray; //copy
-    primes = other.primes;
+    primes = other.primes; //copy
     return *this;
 }
 
@@ -57,7 +57,7 @@ bool MagicalContainer::isPrime(int num) {
     return true;
 }
 
-
+//primes pointers
 void MagicalContainer::updatePrimes() {
     primes.clear();
     for (int& num : dArray) {
@@ -69,10 +69,12 @@ void MagicalContainer::updatePrimes() {
 
 //---------------------------AscendingIterator-----------------------------------
 
+//Constructor
 MagicalContainer::AscendingIterator::AscendingIterator(const MagicalContainer &cont, int curr)
         : cont(cont), curr(curr) {
 }
 
+//copy Constructor
 MagicalContainer::AscendingIterator::AscendingIterator(const AscendingIterator &other)
         : cont(other.cont), curr(other.curr) {}
 
@@ -84,6 +86,7 @@ MagicalContainer::AscendingIterator MagicalContainer::AscendingIterator::begin()
 MagicalContainer::AscendingIterator MagicalContainer::AscendingIterator::end() const {
     return AscendingIterator(cont, cont.size());
 }
+
 MagicalContainer::AscendingIterator &MagicalContainer::AscendingIterator::operator=(const AscendingIterator &other) {
     if (&this->cont != &other.cont)
         throw runtime_error("Not the same container");
@@ -123,12 +126,13 @@ MagicalContainer::AscendingIterator &MagicalContainer::AscendingIterator::operat
 
 //----------------------------------SideCrossIterator----------------------------------
 
+// Constructor
 MagicalContainer::SideCrossIterator::SideCrossIterator(const MagicalContainer &cont, int forward, int backward)
         : cont(cont), forward(forward), backward(backward) {
     if (backward == -1)
         this->backward = cont.size()-1;
 }
-
+//copy Constructor
 MagicalContainer::SideCrossIterator::SideCrossIterator(const SideCrossIterator &other)
         : cont(other.cont), forward(other.forward), backward(other.backward) {}
 
@@ -140,9 +144,9 @@ MagicalContainer::SideCrossIterator MagicalContainer::SideCrossIterator::begin()
 MagicalContainer::SideCrossIterator MagicalContainer::SideCrossIterator::end() const {
     int s = cont.size() / 2;
     if (cont.size() % 2 == 0) {
-        return SideCrossIterator(cont, s, s-1);
+        return SideCrossIterator(cont, s, s-1); //Even
     }
-    return SideCrossIterator(cont, s+1, s);
+    return SideCrossIterator(cont, s+1, s); //Odd
 }
 
 MagicalContainer::SideCrossIterator &MagicalContainer::SideCrossIterator::operator=(const SideCrossIterator &other) {
@@ -201,11 +205,11 @@ int MagicalContainer::SideCrossIterator::operator*() {
 MagicalContainer::SideCrossIterator &MagicalContainer::SideCrossIterator::operator++() {
     if (*this == end())
         throw runtime_error("You are at the end");
-    if (isForward) {
+    if (isForward) { //Forward
         ++forward;
         isForward = false;
     }
-    else {
+    else { //Backward
         --backward;
         isForward = true;
     }
@@ -216,10 +220,12 @@ MagicalContainer::SideCrossIterator &MagicalContainer::SideCrossIterator::operat
 
 //------------------------------PrimeIterator--------------------------------
 
+//Constructor
 MagicalContainer::PrimeIterator::PrimeIterator(const MagicalContainer &cont, int curr)
         : cont(cont), curr(curr) {
 }
 
+//copy Constructor
 MagicalContainer::PrimeIterator::PrimeIterator(const PrimeIterator &other)
         : cont(other.cont), curr(other.curr) {}
 
