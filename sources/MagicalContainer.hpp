@@ -17,6 +17,7 @@ using namespace std;
 class MagicalContainer {
 private:
     std::vector<int> dArray;
+    std::vector<int*> primes;
 
 public:
     MagicalContainer(); //default
@@ -32,6 +33,9 @@ public:
     void removeElement(int element);
 
     int size() const;
+
+    bool isPrime(int num);
+    void updatePrimes();
 
     //AscendingIterator
     class AscendingIterator {
@@ -97,6 +101,7 @@ public:
     private:
         const MagicalContainer &cont;
         int curr;
+        vector<const int*> primes;
 
     public:
         PrimeIterator(const MagicalContainer &cont, int curr = 0);
@@ -105,7 +110,6 @@ public:
         PrimeIterator(PrimeIterator&& other) noexcept; // Move constructor
         PrimeIterator& operator=(PrimeIterator&& other) noexcept; // Move assignment operator
 
-        bool isPrime(int num);
         PrimeIterator begin() const;
         PrimeIterator end() const;
 
