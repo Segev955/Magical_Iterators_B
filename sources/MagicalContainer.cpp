@@ -4,14 +4,17 @@
 
 #include "MagicalContainer.hpp"
 
+//constructor
 MagicalContainer::MagicalContainer() {
 }
 
+//copy constructor
 MagicalContainer::MagicalContainer(MagicalContainer &other) {
     dArray = other.dArray;
     primes = other.primes;
 }
 
+//destructor
 MagicalContainer::~MagicalContainer() {}
 
 
@@ -60,7 +63,7 @@ bool MagicalContainer::isPrime(int num) {
 //primes pointers
 void MagicalContainer::updatePrimes() {
     primes.clear();
-    for (int& num : dArray) {
+    for (int &num : dArray) {
         if (isPrime(num)) {
             primes.push_back(&num);
         }
@@ -70,7 +73,7 @@ void MagicalContainer::updatePrimes() {
 //---------------------------AscendingIterator-----------------------------------
 
 //Constructor
-MagicalContainer::AscendingIterator::AscendingIterator(const MagicalContainer &cont, int curr)
+MagicalContainer::AscendingIterator::AscendingIterator(const MagicalContainer &cont, int curr) //curr = 0 (default)
         : cont(cont), curr(curr) {
 }
 
@@ -88,7 +91,7 @@ MagicalContainer::AscendingIterator MagicalContainer::AscendingIterator::end() c
 }
 
 MagicalContainer::AscendingIterator &MagicalContainer::AscendingIterator::operator=(const AscendingIterator &other) {
-    if (&this->cont != &other.cont)
+    if (&this->cont != &other.cont) //if the container is not the same
         throw runtime_error("Not the same container");
     if (this != &other) {
         curr = other.curr;
@@ -127,9 +130,9 @@ MagicalContainer::AscendingIterator &MagicalContainer::AscendingIterator::operat
 //----------------------------------SideCrossIterator----------------------------------
 
 // Constructor
-MagicalContainer::SideCrossIterator::SideCrossIterator(const MagicalContainer &cont, int forward, int backward)
+MagicalContainer::SideCrossIterator::SideCrossIterator(const MagicalContainer &cont, int forward, int backward) // forward = 0, backward = -1
         : cont(cont), forward(forward), backward(backward) {
-    if (backward == -1)
+    if (backward == -1) //default
         this->backward = cont.size()-1;
 }
 //copy Constructor

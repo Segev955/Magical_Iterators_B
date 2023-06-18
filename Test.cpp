@@ -9,7 +9,7 @@ TEST_CASE("init") {
     MagicalContainer container;
     CHECK_NOTHROW(container.addElement(15));
     CHECK_NOTHROW(container.removeElement(15));
-    CHECK_THROWS(container.removeElement(15));
+    CHECK_THROWS(container.removeElement(15)); //remove throw
 
     container.addElement(24);
     container.addElement(1);
@@ -36,7 +36,7 @@ TEST_CASE("AscendingIterator") {
     CHECK_EQ(*it, 9);
     CHECK_NOTHROW(++it);
     CHECK_EQ(*it, 24);
-    CHECK_THROWS(++it);
+    CHECK_THROWS(++it); //++ throw
 
 
     CHECK(*ascIter.begin() > *ascIter.end());
@@ -61,7 +61,7 @@ TEST_CASE("SideCrossIterator") {
     CHECK_EQ(*it, 9);
     CHECK_NOTHROW(++it);
     CHECK_EQ(*it, 1);
-    CHECK_THROWS(++it);
+    CHECK_THROWS(++it);//++ throw
 
     CHECK(*sidIter.begin() > *sidIter.end());
     CHECK_FALSE(*sidIter.begin() < *sidIter.end());
@@ -84,7 +84,7 @@ TEST_CASE("PrimeIterator") {
     CHECK_EQ(*it, 1);
     CHECK_NOTHROW(++it);
     CHECK_EQ(*it, 7);
-    CHECK_THROWS(++it);
+    CHECK_THROWS(++it); //++ throw
 
 
 
@@ -95,5 +95,41 @@ TEST_CASE("PrimeIterator") {
 //    container.removeElement(24);
 //    container.removeElement(9);
     CHECK_FALSE(*primIter.begin() == *primIter.end());
+}
+
+TEST_CASE("different containers") {
+    MagicalContainer container1;
+    MagicalContainer container2;
+
+    //container1
+    container1.addElement(1);
+    container1.addElement(2);
+    container1.addElement(3);
+    //container2
+    container2.addElement(11);
+    container2.addElement(22);
+    container2.addElement(33);
+
+    SUBCASE("AscendingIterator")
+    {
+        MagicalContainer::AscendingIterator it1(container1);
+        MagicalContainer::AscendingIterator it2(container2);
+
+        CHECK_THROWS(it1 = it2);
+    }
+    SUBCASE("SideCrossIterator")
+    {
+        MagicalContainer::SideCrossIterator it1(container1);
+        MagicalContainer::SideCrossIterator it2(container2);
+
+        CHECK_THROWS(it1 = it2);
+    }
+    SUBCASE("AscendingIterator")
+    {
+        MagicalContainer::PrimeIterator it1(container1);
+        MagicalContainer::PrimeIterator it2(container2);
+
+        CHECK_THROWS(it1 = it2);
+    }
 }
 

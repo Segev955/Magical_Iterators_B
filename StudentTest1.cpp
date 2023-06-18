@@ -405,7 +405,7 @@ TEST_CASE("Iterator Increment Beyond End") {
         while (it != it.end()) {
             ++it;
         }
-    
+
         // Attempt to increment beyond the end
         CHECK_THROWS_AS(++it, runtime_error);
     }
@@ -571,29 +571,27 @@ TEST_CASE("operator= throws when iterators are pointing at different containers"
 
     container2.addElement(4);
     container2.addElement(5);
-    container2.addElement(6);    
+    container2.addElement(6);
 
-   SUBCASE("AscendingIterator")
-   {
+    SUBCASE("AscendingIterator")
+    {
         MagicalContainer::AscendingIterator it1(container1);
         MagicalContainer::AscendingIterator it2(container2);
 
         CHECK_THROWS_AS(it1 = it2, std::runtime_error);
-   }
-   SUBCASE("SideCrossIterator")
-   {
+    }
+    SUBCASE("SideCrossIterator")
+    {
         MagicalContainer::SideCrossIterator it1(container1);
         MagicalContainer::SideCrossIterator it2(container2);
 
         CHECK_THROWS_AS(it1 = it2, std::runtime_error);
-   }
-   SUBCASE("AscendingIterator")
-   {
+    }
+    SUBCASE("AscendingIterator")
+    {
         MagicalContainer::PrimeIterator it1(container1);
         MagicalContainer::PrimeIterator it2(container2);
 
         CHECK_THROWS_AS(it1 = it2, std::runtime_error);
-   }
+    }
 }
-
-
